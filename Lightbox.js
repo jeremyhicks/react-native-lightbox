@@ -27,7 +27,9 @@ var Lightbox = React.createClass({
     renderContent:   PropTypes.func,
     underlayColor:   PropTypes.string,
     backgroundColor: PropTypes.string,
+    onBeforeOpen:    PropTypes.func,
     onOpen:          PropTypes.func,
+    onBeforeClose:   PropTypes.func,
     onClose:         PropTypes.func,
     springConfig:    PropTypes.shape({
       tension:       PropTypes.number,
@@ -40,7 +42,9 @@ var Lightbox = React.createClass({
     return {
       swipeToDismiss: true,
       onOpen: () => {},
+      onBeforeOpen: () => {},
       onClose: () => {},
+      onBeforeClose: () => {}
     };
   },
 
@@ -78,13 +82,14 @@ var Lightbox = React.createClass({
       springConfig: this.props.springConfig,
       backgroundColor: this.props.backgroundColor,
       children: this.getContent(),
-      onClose: this.onClose,
+      onBeforeClose: this.onBeforeClose,
+      onClose: this.onClose
     };
   },
 
   open: function() {
     this._root.measure((ox, oy, width, height, px, py) => {
-      this.props.onOpen();
+      this.props.onBeforeOpen();
 
       this.setState({
         isOpen: (this.props.navigator ? true : false),
@@ -96,6 +101,7 @@ var Lightbox = React.createClass({
           y: py,
         },
       }, () => {
+        this.props.onOpen();
         if(this.props.navigator) {
           var route = {
             component: LightboxOverlay,
@@ -118,6 +124,10 @@ var Lightbox = React.createClass({
 
   close: function() {
     throw new Error('Lightbox.close method is deprecated. Use renderHeader(close) prop instead.')
+  },
+
+  onBeforeClose: function() {
+    this.props.onBeforeClose();
   },
 
   onClose: function() {
