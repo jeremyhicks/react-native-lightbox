@@ -4,10 +4,10 @@
 'use strict';
 
 var React = require('react');
+var PropTypes = require('prop-types');
 var {
   Children,
   cloneElement,
-  PropTypes,
 } = React;
 var {
   Animated,
